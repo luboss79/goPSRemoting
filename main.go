@@ -41,7 +41,7 @@ func RunPowershellCommand(username string, password string, server string, comma
         if (usessh == "1") {
                 winRMPre = "$s = New-PSSession -HostName " + server + " -Username " + username + " -SSHTransport"
         } else {
-                winRMPre = "$SecurePassword = '" + password + "' | ConvertTo-SecureString -AsPlainText -Force; $cred = New-Object System.Management.Automation.PSCredential -ArgumentList '" + username + "', $SecurePassword; $s = New-PSSession -auth Negotiate -ComputerName " + server + " -Credential $cred"
+                winRMPre = "$SecurePassword = '" + password + "' | ConvertTo-SecureString -AsPlainText -Force; $cred = New-Object System.Management.Automation.PSCredential -ArgumentList '" + username + "', $SecurePassword; $s = New-PSSession -Authentication Negotiate -ComputerName " + server + " -Credential $cred"
         }
 
         var winRMPost string
@@ -55,7 +55,7 @@ func RunPowershellCommand(username string, password string, server string, comma
         var winRMCommand string
 
         if (usessl == "1") {
-                winRMCommand = winRMPre + " -UseSSL" + winRMPost
+                winRMCommand = " $pso = New-PSSessionOption -SkipCACheck -SkipCNCheck; " + winRMPre + " -UseSSL -SessionOption $pso " + winRMPost
         } else {
                 winRMCommand = winRMPre + winRMPost
         }
